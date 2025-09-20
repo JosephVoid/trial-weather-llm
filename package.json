@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "perf-test": "npx tsc --project tsconfig.scripts.json && node dist/index.js"
   },
   "dependencies": {
     "next": "15.5.3",
