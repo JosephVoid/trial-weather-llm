@@ -46,12 +46,3 @@ export async function feedGemini(toolResponse: string) {
     return null;
   }
 }
-
-export const models: {
-  [key: string]: {
-    request: (query: string) => Promise<ModelResponse | null>;
-    feed: (toolResponse: string) => Promise<GeneralResponse | null>;
-  };
-} = {
-  gemini: { request: requestGemini, feed: feedGemini },
-};

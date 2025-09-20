@@ -1,9 +1,11 @@
+import { models } from "./lib/services/models.service";
+
 export interface ModelRequest {
-  model: string;
+  model: ModelName;
   query: string;
 }
 export interface ModelFeedRequest {
-  model: string;
+  model: ModelName;
   feed: string;
 }
 
@@ -16,3 +18,11 @@ export interface GeneralResponse {
   response: string;
   success: boolean;
 }
+
+export type ModelDefinition = {
+  request: (query: string) => Promise<ModelResponse | null>;
+  feed: (toolResponse: string) => Promise<GeneralResponse | null>;
+};
+
+type Models = typeof models;
+export type ModelName = keyof Models;

@@ -6,7 +6,7 @@ import {
 } from "../../types";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { tools } from "../utils/tools";
-import { models } from "./get-model.service";
+import { models } from "./models.service";
 import { history } from "../utils/history";
 
 export async function requestModel(
