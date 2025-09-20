@@ -10,6 +10,8 @@
     "perf-test": "npx tsc --project tsconfig.scripts.json && node dist/index.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.2.2",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -26,6 +28,7 @@
     "jest": "^30.1.3",
     "jest-environment-jsdom": "^30.1.2",
     "tailwindcss": "^4",
+    "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "typescript": "^5"
   }
