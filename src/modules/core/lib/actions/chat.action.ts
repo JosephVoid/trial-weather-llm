@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  feedResponseToModel,
-  requestModel,
-} from "../services/model-request.service";
+import { feedModel, requestModel } from "../services/model-request.service";
 import executeTool from "../services/tool.service";
 
 export default async function chatAction(query: string, model: string) {
@@ -11,7 +8,14 @@ export default async function chatAction(query: string, model: string) {
   if (!modelResponse) return null;
 
   const toolResponse = await executeTool(modelResponse);
-  const responseToUser = await feedResponseToModel(toolResponse);
+  if (!toolResponse) return null;
+
+  const responseToUser = await feedModel({
+    model,
+    feed: toolResponse.response,
+  });
+  if (!responseToUser) return null;
+
   if (responseToUser.success) return responseToUser.response;
   else return null;
 }

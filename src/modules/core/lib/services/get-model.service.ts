@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ModelResponse } from "../../types";
+import { GeneralResponse, ModelResponse } from "../../types";
 import { tools } from "../utils/tools";
+import { history, recordHistory } from "../utils/history";
 
 export async function requestGemini(
   query: string
@@ -11,9 +12,10 @@ export async function requestGemini(
       model: "gemini-2.5-flash",
       tools: [{ functionDeclarations: tools }],
     });
-    const chat = model.startChat();
+    const chat = model.startChat({ history: history });
     const result = await chat.sendMessage(query);
     const calls = result.response?.functionCalls();
+    recordHistory(result.response.candidates?.map((c) => c.content));
     if (calls && calls.length > 0) {
       const call = calls[0];
       return {
@@ -27,8 +29,29 @@ export async function requestGemini(
   }
 }
 
+export async function feedGemini(toolResponse: string) {
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+    });
+    const chat = model.startChat({ history: history });
+    const result = await chat.sendMessage(
+      `here is the response from the tool \n ${toolResponse} \n Now respond to the user`
+    );
+    recordHistory(result.response.candidates?.map((c) => c.content));
+    return { response: result.response.text(), success: true };
+  } catch (error) {
+    console.log({ error });
+    return null;
+  }
+}
+
 export const models: {
-  [key: string]: (query: string) => Promise<ModelResponse | null>;
+  [key: string]: {
+    request: (query: string) => Promise<ModelResponse | null>;
+    feed: (toolResponse: string) => Promise<GeneralResponse | null>;
+  };
 } = {
-  gemini: requestGemini,
+  gemini: { request: requestGemini, feed: feedGemini },
 };
