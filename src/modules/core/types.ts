@@ -1,14 +1,11 @@
 export interface ModelRequest {
   model: string;
-  prompt: {
-    tools: [];
-    query: string;
-  };
+  query: string;
 }
 
 export interface ModelResponse {
   tool: string;
-  params: string[];
+  arguments: string;
 }
 
 export interface GeneralResponse {
