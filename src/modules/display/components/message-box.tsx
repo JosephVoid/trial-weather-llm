@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import { MessageBoxProps, LLM } from "../types";
 
-export default function MessageBox({ llm, convo, onSend }: MessageBoxProps) {
+export default function MessageBox({
+  llm,
+  convo,
+  onSend,
+  loading,
+}: MessageBoxProps) {
   const [message, setMessage] = React.useState("");
 
   return (
@@ -19,6 +24,11 @@ export default function MessageBox({ llm, convo, onSend }: MessageBoxProps) {
             <div className="chat-bubble">{chat.message}</div>
           </div>
         ))}
+        {loading && (
+          <div className={`chat chat-start`}>
+            <div className="chat-bubble">...</div>
+          </div>
+        )}
       </div>
       <div className="h-2/6 w-full flex gap-1">
         <input
@@ -29,7 +39,14 @@ export default function MessageBox({ llm, convo, onSend }: MessageBoxProps) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button className="btn btn-soft" onClick={() => onSend(message)}>
+        <button
+          className="btn btn-soft"
+          onClick={() => {
+            onSend(message);
+            setMessage("");
+          }}
+          disabled={loading}
+        >
           Send
         </button>
       </div>

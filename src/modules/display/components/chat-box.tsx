@@ -4,31 +4,60 @@ import React from "react";
 import MessageBox from "./message-box";
 import LLMSelection from "./llm-selection";
 import StatsBox from "./stats-box";
-import Gm from "@/src/modules/core/assets/Google_Gemini_logo.svg";
 import { LLM } from "../types";
+import { useAsync } from "../hooks/useAsync";
+import fetchLLMsAction from "../../core/lib/actions/fetch-llms.actions";
+import { StateContext } from "../utils/state-provider";
+import chatAction from "../../core/lib/actions/chat.action";
 
 export default function ChatBox() {
-  const [selectedLLM, setSelectedLLM] = React.useState<LLM>({
-    id: "gemini",
-    name: "Gemini",
-    logo: Gm,
-  });
-  const handleMessageSend = (message: string) => {};
+  const [selectedLLM, setSelectedLLM] = React.useState<LLM>();
+  const { conversations, saveMessage } = React.useContext(StateContext);
+
+  const { data: LLMs } = useAsync(fetchLLMsAction, true, []);
+  const { run: sendMessage, loading } = useAsync(chatAction);
+
+  const handleMessageSend = async (message: string) => {
+    if (!LLMs) return;
+    saveMessage({
+      message,
+      llmId: selectedLLM?.id ?? LLMs[0].id,
+      role: "USER",
+      timestamp: new Date(),
+    });
+    const response = await sendMessage(message, "gemini");
+    if (response) {
+      saveMessage({
+        message: response,
+        llmId: selectedLLM?.id ?? LLMs[0].id,
+        role: "LLM",
+        timestamp: new Date(),
+      });
+    }
+  };
 
   return (
     <div className="flex gap-4 min-h-[300px] justify-between w-full">
       <div className="w-1/4">
-        <LLMSelection
-          llms={[
-            { id: "gemini", name: "Gemini", logo: Gm },
-            { id: "gemini", name: "Gemini2", logo: Gm },
-          ]}
-          selected={selectedLLM}
-          onSelect={(llm: LLM) => setSelectedLLM(llm)}
-        />
+        {LLMs && (
+          <LLMSelection
+            llms={LLMs}
+            selected={selectedLLM ?? LLMs[0]}
+            onSelect={(llm: LLM) => setSelectedLLM(llm)}
+          />
+        )}
       </div>
       <div className="w-full">
-        <MessageBox llm={selectedLLM} convo={[]} onSend={handleMessageSend} />
+        {LLMs && (
+          <MessageBox
+            llm={selectedLLM ?? LLMs[0]}
+            convo={conversations.filter(
+              (msg) => msg.llmId === (selectedLLM?.id || LLMs[0].id)
+            )}
+            onSend={handleMessageSend}
+            loading={loading}
+          />
+        )}
       </div>
       <div className="w-1/4">
         <StatsBox stats={{ Latency: "5ms", Tokens: "500" }} />
