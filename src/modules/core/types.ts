@@ -22,6 +22,8 @@ export interface GeneralResponse {
 export type ModelDefinition = {
   request: (query: string) => Promise<ModelResponse | null>;
   feed: (toolResponse: string) => Promise<GeneralResponse | null>;
+  name: string;
+  logo: string;
 };
 
 type Models = typeof models;
