@@ -12,11 +12,13 @@ export interface ModelFeedRequest {
 export interface ModelResponse {
   tool: string;
   arguments: string;
+  metrics?: { [key: string]: string | number };
 }
 
 export interface GeneralResponse {
   response: string;
   success: boolean;
+  metrics?: { [key: string]: string | number };
 }
 
 export type ModelDefinition = {

@@ -12,27 +12,40 @@ import chatAction from "../../core/lib/actions/chat.action";
 
 export default function ChatBox() {
   const [selectedLLM, setSelectedLLM] = React.useState<LLM>();
+  const [metrics, setMetrics] = React.useState<{
+    [key: string]: string | number;
+  }>();
+
   const { conversations, saveMessage } = React.useContext(StateContext);
 
   const { data: LLMs } = useAsync(fetchLLMsAction, true, []);
   const { run: sendMessage, loading } = useAsync(chatAction);
 
   const handleMessageSend = async (message: string) => {
+    const message_box = document.getElementById("conv-box");
+    if (message_box) {
+      message_box.scroll({ top: message_box.scrollHeight, behavior: "smooth" });
+    }
+
     if (!LLMs) return;
+
     saveMessage({
       message,
       llmId: selectedLLM?.id ?? LLMs[0].id,
       role: "USER",
       timestamp: new Date(),
     });
+
     const response = await sendMessage(message, "gemini");
+
     if (response) {
       saveMessage({
-        message: response,
+        message: response.response,
         llmId: selectedLLM?.id ?? LLMs[0].id,
         role: "LLM",
         timestamp: new Date(),
       });
+      setMetrics(response.metrics);
     }
   };
 
@@ -60,7 +73,7 @@ export default function ChatBox() {
         )}
       </div>
       <div className="w-1/4">
-        <StatsBox stats={{ Latency: "5ms", Tokens: "500" }} />
+        <StatsBox stats={metrics ?? {}} />
       </div>
     </div>
   );

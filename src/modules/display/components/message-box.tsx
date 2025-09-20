@@ -13,7 +13,10 @@ export default function MessageBox({
   return (
     <div className="p-4 rounded-sm outline-1 outline-blue-100 flex flex-col justify-between gap-2">
       <div className="text-2xl font-extrabold h-1/6">{llm.name}</div>
-      <div className="h-full min-h-[300px]" id="conv-box">
+      <div
+        className="h-full min-h-[300px] max-h-[400px] overflow-x-scroll"
+        id="conv-box"
+      >
         {convo.map((chat, index) => (
           <div
             key={index}

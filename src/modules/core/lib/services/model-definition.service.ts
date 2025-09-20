@@ -7,6 +7,7 @@ export async function requestGemini(
   query: string
 ): Promise<ModelResponse | null> {
   try {
+    const startTime = Date.now();
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
@@ -21,6 +22,10 @@ export async function requestGemini(
       return {
         tool: call.name,
         arguments: JSON.stringify(call.args),
+        metrics: {
+          "Tokens Used": result.response.usageMetadata?.totalTokenCount ?? 0,
+          "Request Time": Date.now() - startTime,
+        },
       };
     } else return null;
   } catch (error) {
@@ -29,8 +34,11 @@ export async function requestGemini(
   }
 }
 
-export async function feedGemini(toolResponse: string) {
+export async function feedGemini(
+  toolResponse: string
+): Promise<GeneralResponse | null> {
   try {
+    const startTime = Date.now();
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
@@ -40,7 +48,14 @@ export async function feedGemini(toolResponse: string) {
       `here is the response from the tool \n ${toolResponse} \n Now respond to the user`
     );
     recordHistory(result.response.candidates?.map((c) => c.content));
-    return { response: result.response.text(), success: true };
+    return {
+      response: result.response.text(),
+      success: true,
+      metrics: {
+        "Tokens Used": result.response.usageMetadata?.totalTokenCount ?? 0,
+        "Request Time": Date.now() - startTime,
+      },
+    };
   } catch (error) {
     console.log({ error });
     return null;
