@@ -38,9 +38,9 @@ export const models = {
   },
   llama: {
     request: (query: string) =>
-      requestGroq(query, "meta-llama/llama-guard-4-12b"),
+      requestGroq(query, "meta-llama/llama-4-scout-17b-16e-instruct"),
     feed: (toolResponse: string) =>
-      feedGroq(toolResponse, "meta-llama/llama-guard-4-12b"),
+      feedGroq(toolResponse, "meta-llama/llama-4-scout-17b-16e-instruct"),
     name: "LLaMA",
     logo: MetaAILogo,
   },

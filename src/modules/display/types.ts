@@ -17,3 +17,9 @@ export interface MessageBoxProps {
   onSend: (message: string) => void;
   loading?: boolean;
 }
+
+export interface TestMetricResult {
+  model: string;
+  tokens: number;
+  latency: number;
+}

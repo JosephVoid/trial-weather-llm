@@ -76,7 +76,6 @@ export async function feedGeminiStream(
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const chat = model.startChat({ history: history });
 
-    // Start streaming instead of blocking
     const result = await chat.sendMessageStream(
       `here is the response from the tool \n ${toolResponse} \n Now respond to the user`
     );
@@ -87,7 +86,7 @@ export async function feedGeminiStream(
       const chunkText = chunk.text();
       if (chunkText) {
         fullText += chunkText;
-        onChunk(chunkText); // send partial updates to UI
+        onChunk(chunkText);
       }
     }
 

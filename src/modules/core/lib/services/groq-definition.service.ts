@@ -16,9 +16,12 @@ export async function requestGroq(
     const response = await groq.chat.completions.create({
       model: vendorModelName,
       messages: [
-        ...groqHistory.filter(
-          (history) => history.vendorModelName === vendorModelName
-        ),
+        ...groqHistory
+          .filter((history) => history.vendorModelName === vendorModelName)
+          .map((history) => {
+            const { vendorModelName, ...theRest } = history;
+            return theRest;
+          }),
         {
           role: "system",
           content: `
@@ -65,9 +68,12 @@ export async function feedGroq(
     const response = await groq.chat.completions.create({
       model: vendorModelName,
       messages: [
-        ...groqHistory.filter(
-          (history) => history.vendorModelName === vendorModelName
-        ),
+        ...groqHistory
+          .filter((history) => history.vendorModelName === vendorModelName)
+          .map((history) => {
+            const { vendorModelName, ...theRest } = history;
+            return theRest;
+          }),
         {
           role: "user",
           content: `Here is the response from the tool:\n${toolResponse}\nNow respond to the user.`,
