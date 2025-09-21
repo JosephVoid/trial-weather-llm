@@ -15,13 +15,18 @@ export async function requestGroq(
     const startTime = Date.now();
     const response = await groq.chat.completions.create({
       model: vendorModelName,
-      messages: [...groqHistory, { role: "user", content: query }],
+      messages: [
+        ...groqHistory.filter(
+          (history) => history.vendorModelName === vendorModelName
+        ),
+        { role: "user", content: query },
+      ],
       tools: openAITools,
       tool_choice: "auto",
     });
 
     const choice = response.choices[0];
-    recordGroqHistory(choice.message);
+    recordGroqHistory({ ...choice.message, vendorModelName });
 
     const toolCalls = choice.message.tool_calls;
     if (toolCalls && toolCalls.length > 0) {
@@ -53,7 +58,9 @@ export async function feedGroq(
     const response = await groq.chat.completions.create({
       model: vendorModelName,
       messages: [
-        ...groqHistory,
+        ...groqHistory.filter(
+          (history) => history.vendorModelName === vendorModelName
+        ),
         {
           role: "user",
           content: `Here is the response from the tool:\n${toolResponse}\nNow respond to the user.`,
@@ -62,7 +69,7 @@ export async function feedGroq(
     });
 
     const choice = response.choices[0];
-    recordGroqHistory(choice.message);
+    recordGroqHistory({ ...choice.message, vendorModelName });
 
     return {
       response: choice.message.content ?? "",
