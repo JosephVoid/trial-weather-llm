@@ -12,6 +12,10 @@ export async function requestGemini(
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       tools: [{ functionDeclarations: tools }],
+      systemInstruction: `
+        You are a weather assistant. 
+        You only answer queries related to weather using the weather tools. 
+        If the query is unrelated to weather, call the tool "no_tool" instead of responding.`,
     });
     const chat = model.startChat({ history: history });
     const result = await chat.sendMessage(query);

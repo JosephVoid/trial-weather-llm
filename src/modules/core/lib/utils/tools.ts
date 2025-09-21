@@ -43,6 +43,15 @@ export const tools: FunctionDeclaration[] = [
       required: ["lat", "lon"],
     },
   },
+  {
+    name: "no_tool",
+    description:
+      "Used when the query is unrelated to weather and to live weather infomation retreival",
+    parameters: {
+      type: SchemaType.OBJECT,
+      properties: {},
+    },
+  },
 ];
 
 export const openAITools: Groq.Chat.Completions.ChatCompletionTool[] = [
@@ -93,6 +102,18 @@ export const openAITools: Groq.Chat.Completions.ChatCompletionTool[] = [
           lon: { type: "number", description: "Longitude" },
         },
         required: ["lat", "lon"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "no_tool",
+      description:
+        "Used when the query is unrelated to weather and to live weather infomation retreival",
+      parameters: {
+        type: "object",
+        properties: {},
       },
     },
   },

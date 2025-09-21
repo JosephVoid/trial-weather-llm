@@ -19,6 +19,13 @@ export async function requestGroq(
         ...groqHistory.filter(
           (history) => history.vendorModelName === vendorModelName
         ),
+        {
+          role: "system",
+          content: `
+        You are a weather assistant. 
+        You only answer queries related to weather using the weather tools. 
+        If the query is unrelated to weather, call the tool "no_tool" instead of responding.`,
+        },
         { role: "user", content: query },
       ],
       tools: openAITools,

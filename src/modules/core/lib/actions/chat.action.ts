@@ -14,6 +14,15 @@ export default async function chatAction(
   const modelResponse = await requestModel({ query, model });
   if (!modelResponse) return null;
 
+  // Reject any queries that are not related to the weather
+  if (modelResponse.tool === "no_tool") {
+    return {
+      response:
+        "Please enter something that is related to live weather infomation retrieval",
+      metrics: modelResponse.metrics ? modelResponse.metrics : {},
+    };
+  }
+
   const toolResponse = await executeTool(modelResponse);
   if (!toolResponse) return null;
 
