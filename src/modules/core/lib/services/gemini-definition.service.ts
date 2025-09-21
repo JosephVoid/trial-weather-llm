@@ -91,7 +91,7 @@ export async function feedGeminiStream(
       }
     }
 
-    recordHistory([{ role: "ASSITANT", parts: [{ text: fullText }] }]);
+    recordHistory([{ role: "model", parts: [{ text: fullText }] }]);
 
     return {
       response: fullText,
