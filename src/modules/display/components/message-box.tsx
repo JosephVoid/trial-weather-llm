@@ -7,6 +7,7 @@ export default function MessageBox({
   convo,
   onSend,
   loading,
+  streamingMessage,
 }: MessageBoxProps) {
   const [message, setMessage] = React.useState("");
 
@@ -27,6 +28,11 @@ export default function MessageBox({
             <div className="chat-bubble">{chat.message}</div>
           </div>
         ))}
+        {streamingMessage && (
+          <div className={`chat chat-start`}>
+            <div className="chat-bubble">{streamingMessage.message}</div>
+          </div>
+        )}
         {loading && (
           <div className={`chat chat-start`}>
             <div className="chat-bubble">...</div>
@@ -48,7 +54,7 @@ export default function MessageBox({
             onSend(message);
             setMessage("");
           }}
-          disabled={loading}
+          disabled={loading || !!streamingMessage}
         >
           Send
         </button>

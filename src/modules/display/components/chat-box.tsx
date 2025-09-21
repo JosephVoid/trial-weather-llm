@@ -16,7 +16,13 @@ export default function ChatBox() {
     [key: string]: string | number;
   }>();
 
-  const { conversations, saveMessage } = React.useContext(StateContext);
+  const {
+    conversations,
+    saveMessage,
+    saveMessageChunk,
+    finalizeStream,
+    streamingMessage,
+  } = React.useContext(StateContext);
 
   const { data: LLMs } = useAsync(fetchLLMsAction, true, []);
   const { run: sendMessage, loading } = useAsync(chatAction);
@@ -44,6 +50,45 @@ export default function ChatBox() {
     }
   };
 
+  const handleStreamingMessageSend = async (message: string) => {
+    if (!LLMs) return;
+
+    saveMessage({
+      message,
+      llmId: selectedLLM?.id ?? LLMs[0].id,
+      role: "USER",
+      timestamp: new Date(),
+    });
+
+    const res = await fetch("/api/streamed-chat", {
+      method: "POST",
+      body: JSON.stringify({ query: message, model: "gemini" }),
+    });
+
+    const reader = res.body?.getReader();
+    const decoder = new TextDecoder();
+
+    if (!reader) return;
+
+    let fullText = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      const chunk = decoder.decode(value, { stream: true });
+      fullText += chunk;
+      saveMessageChunk(chunk, "gemini_streaming");
+
+      if (done) {
+        finalizeStream({
+          llmId: "gemini_streaming",
+          role: "LLM",
+          timestamp: new Date(),
+          message: fullText,
+        });
+        break;
+      }
+    }
+  };
+
   React.useEffect(() => {
     setMetrics({});
   }, [selectedLLM, LLMs]);
@@ -57,6 +102,13 @@ export default function ChatBox() {
       });
     }
   }, [conversations, selectedLLM]);
+
+  const isStreamingGemini = React.useMemo(() => {
+    if (selectedLLM) {
+      return selectedLLM.id === "gemini_streaming";
+    }
+    return false;
+  }, [selectedLLM]);
 
   return (
     <div className="flex gap-4 min-h-[300px] justify-between w-full">
@@ -73,11 +125,14 @@ export default function ChatBox() {
       <div className="w-full">
         {LLMs && (
           <MessageBox
+            streamingMessage={streamingMessage}
             llm={selectedLLM ?? LLMs[0]}
             convo={conversations.filter(
               (msg) => msg.llmId === (selectedLLM?.id || LLMs[0].id)
             )}
-            onSend={handleMessageSend}
+            onSend={
+              isStreamingGemini ? handleStreamingMessageSend : handleMessageSend
+            }
             loading={loading}
           />
         )}

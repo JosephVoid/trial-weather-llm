@@ -65,3 +65,43 @@ export async function feedGemini(
     return null;
   }
 }
+
+export async function feedGeminiStream(
+  toolResponse: string,
+  onChunk: (text: string) => void
+): Promise<GeneralResponse | null> {
+  try {
+    const startTime = Date.now();
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const chat = model.startChat({ history: history });
+
+    // Start streaming instead of blocking
+    const result = await chat.sendMessageStream(
+      `here is the response from the tool \n ${toolResponse} \n Now respond to the user`
+    );
+
+    let fullText = "";
+
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text();
+      if (chunkText) {
+        fullText += chunkText;
+        onChunk(chunkText); // send partial updates to UI
+      }
+    }
+
+    recordHistory([{ role: "ASSITANT", parts: [{ text: fullText }] }]);
+
+    return {
+      response: fullText,
+      success: true,
+      metrics: {
+        "Request Time": Date.now() - startTime,
+      },
+    };
+  } catch (error) {
+    console.error({ error });
+    return null;
+  }
+}
