@@ -49,6 +49,10 @@ export default function ChatBox() {
     }
   };
 
+  React.useEffect(() => {
+    setMetrics({});
+  }, [selectedLLM, LLMs]);
+
   return (
     <div className="flex gap-4 min-h-[300px] justify-between w-full">
       <div className="w-1/4">
@@ -73,7 +77,9 @@ export default function ChatBox() {
         )}
       </div>
       <div className="w-1/4">
-        <StatsBox stats={metrics ?? {}} />
+        {LLMs && (
+          <StatsBox stats={metrics ?? {}} llm={selectedLLM ?? LLMs[0]} />
+        )}
       </div>
     </div>
   );

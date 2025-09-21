@@ -32,7 +32,7 @@ export default async function chatAction(
 
   const metrics = {
     "Tokens Used": totalTokens,
-    "Request Time": duration + "ms",
+    "Request Time": duration,
   };
 
   if (responseToUser.success)
