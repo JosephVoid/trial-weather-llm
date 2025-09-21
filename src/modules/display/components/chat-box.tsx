@@ -22,11 +22,6 @@ export default function ChatBox() {
   const { run: sendMessage, loading } = useAsync(chatAction);
 
   const handleMessageSend = async (message: string) => {
-    const message_box = document.getElementById("conv-box");
-    if (message_box) {
-      message_box.scroll({ top: message_box.scrollHeight, behavior: "smooth" });
-    }
-
     if (!LLMs) return;
 
     saveMessage({
@@ -53,6 +48,16 @@ export default function ChatBox() {
     setMetrics({});
   }, [selectedLLM, LLMs]);
 
+  React.useEffect(() => {
+    const message_box = document.getElementById("conv-box");
+    if (message_box) {
+      message_box.scroll({
+        top: message_box.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [conversations, selectedLLM]);
+
   return (
     <div className="flex gap-4 min-h-[300px] justify-between w-full">
       <div className="w-1/4">
@@ -61,6 +66,7 @@ export default function ChatBox() {
             llms={LLMs}
             selected={selectedLLM ?? LLMs[0]}
             onSelect={(llm: LLM) => setSelectedLLM(llm)}
+            disabled={loading}
           />
         )}
       </div>
