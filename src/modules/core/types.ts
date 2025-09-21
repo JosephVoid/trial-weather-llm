@@ -22,8 +22,14 @@ export interface GeneralResponse {
 }
 
 export type ModelDefinition = {
-  request: (query: string) => Promise<ModelResponse | null>;
-  feed: (toolResponse: string) => Promise<GeneralResponse | null>;
+  request: (
+    query: string,
+    venderModelName?: string
+  ) => Promise<ModelResponse | null>;
+  feed: (
+    toolResponse: string,
+    venderModelName?: string
+  ) => Promise<GeneralResponse | null>;
   name: string;
   logo: string;
 };

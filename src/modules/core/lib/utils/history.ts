@@ -1,6 +1,10 @@
 import { Content } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 export const history: Content[] = [];
+
+export const groqHistory: Groq.Chat.Completions.ChatCompletionMessageParam[] =
+  [];
 
 export function recordHistory(contents: Content[] | undefined) {
   if (contents) {
@@ -14,4 +18,10 @@ export function recordHistory(contents: Content[] | undefined) {
       });
     });
   }
+}
+
+export function recordGroqHistory(
+  message: Groq.Chat.Completions.ChatCompletionMessageParam
+) {
+  groqHistory.push(message);
 }

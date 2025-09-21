@@ -7,6 +7,7 @@ export default async function executeTool(
 ): Promise<GeneralResponse | null> {
   try {
     const query = queryMap(response);
+    console.log({ query });
     if (!query) return null;
     const axiosResponse = await axios.get(
       `http://api.weatherstack.com/current?access_key=${process.env.WEATHER_API_KEY}&query=${query}`
