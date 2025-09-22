@@ -1,9 +1,10 @@
 "use client";
 
 import { RightArrow } from "../assets/RightArrow";
-import ChartSection from "../components/chart-section";
+import MetricChartSection from "../components/metric-chart-section";
 import ChatBox from "../components/chat-box";
 import StateProvider from "../utils/state-provider";
+import AccuracyChartSection from "../components/accuracy-chart-section";
 
 export default function LandingPage() {
   return (
@@ -27,7 +28,8 @@ export default function LandingPage() {
             </button>
           </div>
         </div>
-        <ChartSection />
+        <MetricChartSection />
+        <AccuracyChartSection />
       </section>
     </StateProvider>
   );

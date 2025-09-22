@@ -1,18 +1,18 @@
-import { TestMetricResult } from "../types";
+import { TestAccuracyResult } from "../types";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import React from "react";
 import { useAsync } from "../hooks/useAsync";
-import fetchMetricsAction from "../../core/lib/actions/fetch-metrics.action";
+import fetchAccuracyAction from "../../core/lib/actions/fetch-accuracy.action";
 import Spinner from "./spinner";
 
-export default function ChartSection() {
-  const [chartData, setChartData] = React.useState<TestMetricResult[]>([]);
-  const { run: compareMetrics, loading: comparisonLoading } =
-    useAsync(fetchMetricsAction);
+export default function AccuracyChartSection() {
+  const [chartData, setChartData] = React.useState<TestAccuracyResult[]>([]);
+  const { run: compareAccuracy, loading: comparisonLoading } =
+    useAsync(fetchAccuracyAction);
 
   React.useEffect(() => {
-    const storedMetrics = localStorage.getItem("comparison");
+    const storedMetrics = localStorage.getItem("accuracy");
     if (storedMetrics) {
       setChartData(JSON.parse(storedMetrics));
     }
@@ -23,7 +23,7 @@ export default function ChartSection() {
       type: "column",
     },
     title: {
-      text: "Average LLM Token Usage & Latency Comparison",
+      text: "LLM Accuracy Comparison",
     },
     xAxis: {
       categories: chartData.map((d) => d.model),
@@ -32,12 +32,18 @@ export default function ChartSection() {
     yAxis: [
       {
         title: {
-          text: "Tokens Used",
+          text: "Accuracy (%)",
         },
       },
       {
         title: {
-          text: "Latency (ms)",
+          text: "Correct",
+        },
+        opposite: true,
+      },
+      {
+        title: {
+          text: "Failed",
         },
         opposite: true,
       },
@@ -54,26 +60,34 @@ export default function ChartSection() {
     },
     series: [
       {
-        name: "Tokens Used",
+        name: "Accuracy",
         type: "column",
         yAxis: 0,
-        data: chartData.map((d) => d.tokens),
-        color: "#4F46E5", // Indigo
+        data: chartData.map((d) => (d.correct / (d.correct + d.failed)) * 100),
+        color: "#4F46E5",
       },
       {
-        name: "Latency (ms)",
+        name: "Correct",
         type: "column",
         yAxis: 1,
-        data: chartData.map((d) => d.latency),
-        color: "#F59E0B", // Amber
+        data: chartData.map((d) => d.correct),
+        color: "#0B7A75",
+      },
+      {
+        name: "Failed",
+        type: "column",
+        yAxis: 2,
+        data: chartData.map((d) => d.failed),
+        color: "#FF5666",
       },
     ],
   };
 
   const handleModelComparison = async () => {
-    const response = await compareMetrics();
+    const response = await compareAccuracy();
     if (response) {
-      localStorage.setItem("comparison", JSON.stringify(response));
+      console.log({ response });
+      localStorage.setItem("accuracy", JSON.stringify(response));
       setChartData(response);
     }
   };
@@ -81,10 +95,10 @@ export default function ChartSection() {
   return (
     <div
       className="w-full h-screen flex items-center justify-center"
-      id="chart-section"
+      id="accuracy-chart-section"
     >
       <div className="flex flex-col w-full p-5 gap-6">
-        <button className="btn btn-soft w-2/8" onClick={handleModelComparison}>
+        <button className="btn btn-ghost w-2/8" onClick={handleModelComparison}>
           {comparisonLoading ? <Spinner /> : "Re-Compare Models"}
         </button>
         <HighchartsReact highcharts={Highcharts} options={options} />

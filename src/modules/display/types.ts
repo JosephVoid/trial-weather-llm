@@ -23,3 +23,9 @@ export interface TestMetricResult {
   tokens: number;
   latency: number;
 }
+
+export interface TestAccuracyResult {
+  model: string;
+  correct: number;
+  failed: number;
+}
