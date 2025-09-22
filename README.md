@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LLM Weather Chatbot
+
+This is a Next.js application that leverages the power of LLMs to provide real-time weather information using tools. Users can interact with any three chatbots to ask for weather updates for any location. The application also provides a comparison of different LLM models.
+
+## Technologies Used
+
+- **Framework**: [Next.js](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [DaisyUI](https://daisyui.com/)
+- **LLM Integrations**:
+  - [Google Gemini](https://ai.google.dev/)
+  - [Groq](https://groq.com/)
+- **API Communication**: [Axios](https://axios-http.com/)
+- **Data Visualization**: [Highcharts](https://www.highcharts.com/)
 
 ## Getting Started
 
-First, run the development server:
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/JosephVoid/trial-weather-llm
+    ```
+2.  Navigate to the project directory:
+    ```bash
+    cd trial-project
+    ```
+3.  Install the dependencies:
+    ```bash
+    npm install
+    ```
+
+### Environment Variables
+
+Create a `.env` file in the root of the project and add the following environment variables:
+Create an `.env.test` file with the same credentials if you want to run the tests
+
+```
+GEMINI_API_KEY=your_gemini_api_key
+WEATHER_API_KEY=your_weatherstack_api_key
+```
+
+- `GEMINI_API_KEY`: Your API key for the Google Gemini API.
+- `WEATHER_API_KEY`: Your API key for the [Weatherstack API](https://weatherstack.com/).
+
+### Running the Development Server
+
+To start the development server, run the following command:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project is organized into the following modules:
 
-## Learn More
+- **`core`**: Contains the core business logic, including services for interacting with LLMs and external APIs.
+- **`display`**: Contains the UI components, pages, and hooks for the frontend.
 
-To learn more about Next.js, take a look at the following resources:
+## API Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `POST /api/streamed-chat`: This endpoint handles the streamed chat functionality. It takes a `query` and a `model` as input and streams the response back to the client.
