@@ -14,7 +14,10 @@ export default function MessageBox({
 
   return (
     <div className="p-4 rounded-sm outline-1 outline-blue-100 flex flex-col justify-between gap-2">
-      <div className="text-2xl font-bold h-1/6 py-2 shadow-2xs">{llm.name}</div>
+      <div className="h-1/6 py-2 shadow-2xs flex flex-col">
+        <p className="text-2xl font-bold">{llm.name}</p>
+        <p className="text-xs font-light">{llm.desc}</p>
+      </div>
       <div
         className="h-full min-h-[300px] max-h-[400px] overflow-x-scroll"
         id="conv-box"

@@ -22,12 +22,14 @@ export const models = {
     feed: feedGemini,
     name: "Gemini",
     logo: GeminiLogo,
+    desc: "Google's Gemini AI model, running gemini-2.5-flash for this chat",
   },
   streaming_gemini: {
     request: requestGemini,
     feed: feedGemini,
     name: "Gemini Streamed",
     logo: GeminiLogoStreaming,
+    desc: "Same Gemini AI model running gemini-2.5-flash, but responses are streamed instead of blocking",
   },
   openai: {
     request: (query: string) => requestGroq(query, "openai/gpt-oss-20b"),
@@ -35,6 +37,7 @@ export const models = {
       feedGroq(toolResponse, "openai/gpt-oss-20b"),
     name: "OpenAI",
     logo: OpenAILogo,
+    desc: "OpenAI's model running openai/gpt-oss-20b through groq  for this chat",
   },
   llama: {
     request: (query: string) =>
@@ -43,5 +46,6 @@ export const models = {
       feedGroq(toolResponse, "meta-llama/llama-4-scout-17b-16e-instruct"),
     name: "LLaMA",
     logo: MetaAILogo,
+    desc: "Meta's AI model running meta-llama/llama-4-scout-17b-16e-instruct through groq  for this chat",
   },
 } as const satisfies Record<string, ModelDefinition>;

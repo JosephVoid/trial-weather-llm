@@ -32,6 +32,7 @@ export type ModelDefinition = {
   ) => Promise<GeneralResponse | null>;
   name: string;
   logo: string;
+  desc: string;
 };
 
 type Models = typeof models;

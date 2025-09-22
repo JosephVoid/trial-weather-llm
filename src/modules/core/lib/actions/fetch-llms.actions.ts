@@ -9,5 +9,6 @@ export default async function fetchLLMsAction(): Promise<LLM[]> {
     id: id as ModelName,
     name: model.name,
     logo: model.logo,
+    desc: model.desc,
   }));
 }
