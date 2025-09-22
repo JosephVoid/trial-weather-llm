@@ -23,7 +23,7 @@ export const models = {
     name: "Gemini",
     logo: GeminiLogo,
   },
-  gemini_streaming: {
+  streaming_gemini: {
     request: requestGemini,
     feed: feedGemini,
     name: "Gemini Streamed",

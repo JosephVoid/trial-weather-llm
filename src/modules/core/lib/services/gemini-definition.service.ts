@@ -49,7 +49,7 @@ export async function feedGemini(
     });
     const chat = model.startChat({ history: history });
     const result = await chat.sendMessage(
-      `here is the response from the tool \n ${toolResponse} \n Now respond to the user`
+      `here is the response from the tool \n ${toolResponse} \n Now respond to the user. Remove any text formatting.`
     );
     recordHistory(result.response.candidates?.map((c) => c.content));
     return {

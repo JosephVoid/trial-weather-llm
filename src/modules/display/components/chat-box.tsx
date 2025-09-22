@@ -75,11 +75,11 @@ export default function ChatBox() {
       const { done, value } = await reader.read();
       const chunk = decoder.decode(value, { stream: true });
       fullText += chunk;
-      saveMessageChunk(chunk, "gemini_streaming");
+      saveMessageChunk(chunk, "streaming_gemini");
 
       if (done) {
         finalizeStream({
-          llmId: "gemini_streaming",
+          llmId: "streaming_gemini",
           role: "LLM",
           timestamp: new Date(),
           message: fullText,
@@ -105,7 +105,7 @@ export default function ChatBox() {
 
   const isStreamingGemini = React.useMemo(() => {
     if (selectedLLM) {
-      return selectedLLM.id === "gemini_streaming";
+      return selectedLLM.id === "streaming_gemini";
     }
     return false;
   }, [selectedLLM]);

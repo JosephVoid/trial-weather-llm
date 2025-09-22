@@ -9,7 +9,7 @@ export default async function fetchMetricsAction() {
   const results: TestMetricResult[] = [];
 
   for (const modelName in models) {
-    if (modelName === "gemini_streaming") continue;
+    if (modelName === "streaming_gemini") continue;
 
     let totalTokens = 0;
     let totalLatency = 0;

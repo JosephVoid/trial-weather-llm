@@ -76,7 +76,7 @@ export async function feedGroq(
           }),
         {
           role: "user",
-          content: `Here is the response from the tool:\n${toolResponse}\nNow respond to the user.`,
+          content: `Here is the response from the tool:\n${toolResponse}\nNow respond to the user. Remove any text formatting.`,
         },
       ],
     });
