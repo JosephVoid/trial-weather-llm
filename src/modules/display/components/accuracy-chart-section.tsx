@@ -7,7 +7,23 @@ import fetchAccuracyAction from "../../core/lib/actions/fetch-accuracy.action";
 import Spinner from "./spinner";
 
 export default function AccuracyChartSection() {
-  const [chartData, setChartData] = React.useState<TestAccuracyResult[]>([]);
+  const [chartData, setChartData] = React.useState<TestAccuracyResult[]>([
+    {
+      model: "Gemini",
+      correct: 10,
+      failed: 0,
+    },
+    {
+      model: "OpenAI",
+      correct: 6,
+      failed: 4,
+    },
+    {
+      model: "LLaMA",
+      correct: 8,
+      failed: 2,
+    },
+  ]);
   const { run: compareAccuracy, loading: comparisonLoading } =
     useAsync(fetchAccuracyAction);
 
@@ -34,6 +50,11 @@ export default function AccuracyChartSection() {
         title: {
           text: "Accuracy (%)",
         },
+        labels: {
+          formatter: function () {
+            return this.value + "%";
+          },
+        },
       },
       {
         title: {
@@ -50,6 +71,15 @@ export default function AccuracyChartSection() {
     ],
     tooltip: {
       shared: true,
+      formatter: function () {
+        let s = ``;
+        this.points?.forEach((point) => {
+          const value =
+            point.series.name === "Accuracy" ? point.y + "%" : point.y;
+          s += `<br/><span style="color:${point.color}">\u25CF</span> ${point.series.name}: <b>${value}</b>`;
+        });
+        return s;
+      },
     },
     plotOptions: {
       column: {

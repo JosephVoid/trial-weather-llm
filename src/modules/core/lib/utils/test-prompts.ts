@@ -17,11 +17,12 @@ export const accuracy_prompts = [
     tool: "get_weather_by_city",
     arguments: JSON.stringify({ location: "Tokyo" }),
   },
-  // {
-  //   prompt: "Can you tell me the current temperature based on where I am right now?",
-  //   tool: "get_weather_by_ip",
-  //   arguments: JSON.stringify({ ip: "" }), // assume backend resolves user IP
-  // },
+  {
+    prompt:
+      "Can you tell me the current temperature based on where I am right now?",
+    tool: "get_weather_by_user_ip",
+    arguments: JSON.stringify({ ip: "fetch:ip" }),
+  },
   {
     prompt:
       "If I'm standing at latitude 48.8566 and longitude 2.3522, what's the weather?",
@@ -61,9 +62,9 @@ export const accuracy_prompts = [
     tool: "get_weather_by_city",
     arguments: JSON.stringify({ location: "Rome" }),
   },
-  // {
-  //   prompt: "What's it like outside right now?",
-  //   tool: "get_weather_by_ip",
-  //   arguments: JSON.stringify({ ip: "" }),
-  // },
+  {
+    prompt: "What's it like outside right now?",
+    tool: "get_weather_by_ip",
+    arguments: JSON.stringify({ ip: "" }),
+  },
 ];

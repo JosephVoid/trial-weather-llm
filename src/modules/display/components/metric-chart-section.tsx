@@ -8,7 +8,23 @@ import Spinner from "./spinner";
 import { RightArrow } from "../assets/RightArrow";
 
 export default function MetricChartSection() {
-  const [chartData, setChartData] = React.useState<TestMetricResult[]>([]);
+  const [chartData, setChartData] = React.useState<TestMetricResult[]>([
+    {
+      model: "Gemini",
+      tokens: 19296.8,
+      latency: 3670.6,
+    },
+    {
+      model: "OpenAI",
+      tokens: 1401,
+      latency: 934.4,
+    },
+    {
+      model: "LLaMA",
+      tokens: 1858.4,
+      latency: 1177.6,
+    },
+  ]);
   const { run: compareMetrics, loading: comparisonLoading } =
     useAsync(fetchMetricsAction);
 

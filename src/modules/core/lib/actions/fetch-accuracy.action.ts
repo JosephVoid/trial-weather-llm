@@ -5,6 +5,7 @@ import { requestModel } from "../services/model-request.service";
 import { models } from "../services/models.service";
 import { ModelName } from "../../types";
 import { TestAccuracyResult } from "@/src/modules/display/types";
+import { parseToolArguments } from "../utils/helpers";
 
 export default async function fetchAccuracyAction(): Promise<
   TestAccuracyResult[]
@@ -25,11 +26,24 @@ export default async function fetchAccuracyAction(): Promise<
       if (
         result &&
         result.tool === prompt.tool &&
-        result.arguments === prompt.arguments
+        JSON.stringify(parseToolArguments(result.arguments)) ===
+          JSON.stringify(parseToolArguments(prompt.arguments))
       ) {
         correct++;
+        console.log({
+          model: modelName,
+          prompt: prompt.prompt,
+          sucess: true,
+          result,
+        });
       } else {
         failed++;
+        console.log({
+          model: modelName,
+          prompt: prompt.prompt,
+          sucess: false,
+          result,
+        });
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
