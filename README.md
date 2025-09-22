@@ -1,6 +1,6 @@
-# LLM Weather Chatbot
+# Weather Chatbot for Trial
 
-This is a Next.js application that leverages the power of LLMs to provide real-time weather information using tools. Users can interact with any three chatbots to ask for weather updates for any location. The application also provides a comparison of different LLM models.
+A Next.js application that leverages the power of LLMs to provide real-time weather information using tools. Users can interact with any three chatbots to ask for weather updates for any location. The application also provides a comparison of different LLM models.
 
 ## Technologies Used
 
