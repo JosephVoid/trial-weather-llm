@@ -32,6 +32,21 @@ export const tools: FunctionDeclaration[] = [
     },
   },
   {
+    name: "get_weather_by_user_ip",
+    description:
+      "Get the weather information for the users current location by IP address, will always return 'fetch:ip'",
+    parameters: {
+      type: SchemaType.OBJECT,
+      properties: {
+        ip: {
+          type: SchemaType.STRING,
+          description: "Always return the string 'fetch:ip'",
+        },
+      },
+      required: ["ip"],
+    },
+  },
+  {
     name: "get_weather_by_coordinates",
     description: "Get the weather information for a location by coordinates",
     parameters: {
@@ -84,6 +99,24 @@ export const openAITools: Groq.Chat.Completions.ChatCompletionTool[] = [
           ip: {
             type: "string",
             description: "The IP address to look up",
+          },
+        },
+        required: ["ip"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_weather_by_user_ip",
+      description:
+        "Get the weather information for the users current location by IP address, will always return 'fetch:ip'",
+      parameters: {
+        type: "object",
+        properties: {
+          ip: {
+            type: "string",
+            description: "Always return the string 'fetch:ip'",
           },
         },
         required: ["ip"],

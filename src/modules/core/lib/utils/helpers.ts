@@ -8,6 +8,8 @@ export const queryMap = (response: ModelResponse): string | null => {
         return args.location as string;
       case "get_weather_by_ip":
         return args.ip as string;
+      case "get_weather_by_user_ip":
+        return args.ip as string;
       case "get_weather_by_coordinates":
         return `${args.lat}, ${args.lon}` as string;
       default:
