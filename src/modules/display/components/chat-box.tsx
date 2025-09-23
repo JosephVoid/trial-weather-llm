@@ -37,7 +37,7 @@ export default function ChatBox() {
       timestamp: new Date(),
     });
 
-    const response = await sendMessage(message, "gemini");
+    const response = await sendMessage(message, selectedLLM?.id ?? LLMs[0].id);
 
     if (response) {
       saveMessage({

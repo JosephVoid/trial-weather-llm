@@ -22,10 +22,10 @@ export default async function chatAction(
       metrics: modelResponse.metrics ? modelResponse.metrics : {},
     };
   }
-  console.log({ modelResponse });
+
   const toolResponse = await executeTool(modelResponse);
   if (!toolResponse) return null;
-  console.log({ toolResponse });
+
   const responseToUser = await feedModel({
     model,
     feed: toolResponse.response,
