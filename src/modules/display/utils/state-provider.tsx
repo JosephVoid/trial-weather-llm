@@ -7,18 +7,23 @@ export const StateContext = React.createContext<{
   saveMessage: (msg: Message) => void;
   saveMessageChunk: (chunk: string, llmId: string) => void;
   finalizeStream: (msg: Message) => void;
+  userLLMs: string[];
+  addLLM: (venderModelName: string) => void;
 }>({
   conversations: [],
   streamingMessage: null,
   saveMessage: () => null,
   saveMessageChunk: () => null,
   finalizeStream: () => null,
+  userLLMs: [],
+  addLLM: () => null,
 });
 
 export default function StateProvider({ children }: { children: ReactNode }) {
   const [conversations, setConversations] = React.useState<Message[]>([]);
   const [streamingMessage, setStreamingMessage] =
     React.useState<Message | null>(null);
+  const [userLLMs, setUserLLMs] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     console.log({ conversations });
@@ -52,6 +57,11 @@ export default function StateProvider({ children }: { children: ReactNode }) {
   React.useEffect(() => {
     console.log({ streamingMessage });
   }, [streamingMessage]);
+
+  const handleUserLLMAdding = (venderModelName: string) => {
+    setUserLLMs((prev) => [...prev, venderModelName]);
+  };
+
   return (
     <StateContext.Provider
       value={{
@@ -60,6 +70,8 @@ export default function StateProvider({ children }: { children: ReactNode }) {
         saveMessage: handleSaveMessage,
         saveMessageChunk: handleSaveMessageChunk,
         finalizeStream: handleFinalizeStream,
+        userLLMs: userLLMs,
+        addLLM: handleUserLLMAdding,
       }}
     >
       {children}

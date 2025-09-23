@@ -3,10 +3,12 @@ import { models } from "./lib/services/models.service";
 export interface ModelRequest {
   model: ModelName;
   query: string;
+  venderModelName?: string;
 }
 export interface ModelFeedRequest {
   model: ModelName;
   feed: string;
+  venderModelName?: string;
 }
 
 export interface ModelResponse {

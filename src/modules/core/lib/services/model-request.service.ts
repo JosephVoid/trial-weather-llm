@@ -12,6 +12,15 @@ import { history } from "../utils/history";
 export async function requestModel(
   request: ModelRequest
 ): Promise<ModelResponse | null> {
+  if (request.model === "generic") {
+    const model = models["generic"];
+    const response = await model.request(
+      request.query,
+      request.venderModelName
+    );
+    return response;
+  }
+
   if (models[request.model]) {
     const model = models[request.model];
     const response = await model.request(request.query);
@@ -22,6 +31,14 @@ export async function requestModel(
 export async function feedModel(
   feedRequest: ModelFeedRequest
 ): Promise<GeneralResponse | null> {
+  if (feedRequest.model === "generic") {
+    const model = models["generic"];
+    const response = await model.feed(
+      feedRequest.feed,
+      feedRequest.venderModelName
+    );
+    return response;
+  }
   if (models[feedRequest.model]) {
     const model = models[feedRequest.model];
     const response = await model.feed(feedRequest.feed);

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { MessageBoxProps, LLM } from "../types";
-import { UpArrow } from "../assets/UpArrow";
+import { UpArrow } from "../assets/up-arrow";
 
 export default function MessageBox({
   llm,

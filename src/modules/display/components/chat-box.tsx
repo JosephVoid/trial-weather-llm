@@ -22,6 +22,7 @@ export default function ChatBox() {
     saveMessageChunk,
     finalizeStream,
     streamingMessage,
+    userLLMs,
   } = React.useContext(StateContext);
 
   const { data: LLMs } = useAsync(fetchLLMsAction, true, []);
@@ -43,6 +44,33 @@ export default function ChatBox() {
       saveMessage({
         message: response.response,
         llmId: selectedLLM?.id ?? LLMs[0].id,
+        role: "LLM",
+        timestamp: new Date(),
+      });
+      setMetrics(response.metrics);
+    }
+  };
+
+  const handleUserLLMMessageSend = async (message: string) => {
+    console.log("VM", selectedLLM?.venderModelName);
+    if (!LLMs || !selectedLLM) return;
+
+    saveMessage({
+      message,
+      llmId: selectedLLM.id + "_" + selectedLLM.venderModelName,
+      role: "USER",
+      timestamp: new Date(),
+    });
+    const response = await sendMessage(
+      message,
+      "generic",
+      selectedLLM.venderModelName
+    );
+
+    if (response) {
+      saveMessage({
+        message: response.response,
+        llmId: selectedLLM.id + "_" + selectedLLM.venderModelName,
         role: "LLM",
         timestamp: new Date(),
       });
@@ -94,6 +122,7 @@ export default function ChatBox() {
   }, [selectedLLM, LLMs]);
 
   React.useEffect(() => {
+    console.log({ selectedLLM });
     const message_box = document.getElementById("conv-box");
     if (message_box) {
       message_box.scroll({
@@ -110,6 +139,26 @@ export default function ChatBox() {
     return false;
   }, [selectedLLM]);
 
+  const sendFunction = (message: string) => {
+    if (isStreamingGemini) {
+      return handleStreamingMessageSend(message);
+    } else if (selectedLLM?.id === "generic") {
+      return handleUserLLMMessageSend(message);
+    } else return handleMessageSend(message);
+  };
+
+  const conversationFilterFunction = () => {
+    if (selectedLLM?.id === "generic") {
+      return conversations.filter(
+        (msg) => msg.llmId === "generic_" + selectedLLM?.venderModelName
+      );
+    } else if (LLMs) {
+      return conversations.filter(
+        (msg) => msg.llmId === (selectedLLM?.id || LLMs[0].id)
+      );
+    } else return conversations;
+  };
+
   return (
     <div className="flex gap-4 min-h-[300px] justify-between w-full">
       <div className="w-1/4">
@@ -119,6 +168,7 @@ export default function ChatBox() {
             selected={selectedLLM ?? LLMs[0]}
             onSelect={(llm: LLM) => setSelectedLLM(llm)}
             disabled={loading}
+            userLLMs={userLLMs}
           />
         )}
       </div>
@@ -127,12 +177,8 @@ export default function ChatBox() {
           <MessageBox
             streamingMessage={streamingMessage}
             llm={selectedLLM ?? LLMs[0]}
-            convo={conversations.filter(
-              (msg) => msg.llmId === (selectedLLM?.id || LLMs[0].id)
-            )}
-            onSend={
-              isStreamingGemini ? handleStreamingMessageSend : handleMessageSend
-            }
+            convo={conversationFilterFunction()}
+            onSend={sendFunction}
             loading={loading}
           />
         )}

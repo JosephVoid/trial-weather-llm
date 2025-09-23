@@ -6,12 +6,13 @@ import executeTool from "../services/tool.service";
 
 export default async function chatAction(
   query: string,
-  model: ModelName
+  model: ModelName,
+  venderModelName?: string
 ): Promise<{
   response: string;
   metrics: { [key: string]: string | number };
 } | null> {
-  const modelResponse = await requestModel({ query, model });
+  const modelResponse = await requestModel({ query, model, venderModelName });
   if (!modelResponse) return null;
 
   // Reject any queries that are not related to the weather
@@ -29,6 +30,7 @@ export default async function chatAction(
   const responseToUser = await feedModel({
     model,
     feed: toolResponse.response,
+    venderModelName,
   });
   if (!responseToUser) return null;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { RightArrow } from "../assets/RightArrow";
+import { RightArrow } from "../assets/right-arrow";
 import MetricChartSection from "../components/metric-chart-section";
 import ChatBox from "../components/chat-box";
 import StateProvider from "../utils/state-provider";

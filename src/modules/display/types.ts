@@ -1,6 +1,9 @@
 import { ModelDefinition, ModelName } from "../core/types";
 
-export type LLM = Omit<ModelDefinition, "request" | "feed"> & { id: ModelName };
+export type LLM = Omit<ModelDefinition, "request" | "feed"> & {
+  id: ModelName;
+  venderModelName?: string;
+};
 
 export interface Message {
   llmId: string;

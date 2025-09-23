@@ -9,8 +9,9 @@ const groq = new Groq({
 
 export async function requestGroq(
   query: string,
-  vendorModelName: string
+  vendorModelName?: string
 ): Promise<ModelResponse | null> {
+  if (!vendorModelName) return null;
   try {
     const startTime = Date.now();
     const response = await groq.chat.completions.create({
@@ -61,8 +62,9 @@ export async function requestGroq(
 
 export async function feedGroq(
   toolResponse: string,
-  vendorModelName: string
+  vendorModelName?: string
 ): Promise<GeneralResponse | null> {
+  if (!vendorModelName) return null;
   try {
     const startTime = Date.now();
     const response = await groq.chat.completions.create({

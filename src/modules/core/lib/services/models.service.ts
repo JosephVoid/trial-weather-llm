@@ -48,4 +48,13 @@ export const models = {
     logo: MetaAILogo,
     desc: "Meta's AI model running meta-llama/llama-4-scout-17b-16e-instruct through groq  for this chat",
   },
+  generic: {
+    request: (query: string, vendorModelName?: string) =>
+      requestGroq(query, vendorModelName),
+    feed: (toolResponse: string, vendorModelName?: string) =>
+      feedGroq(toolResponse, vendorModelName),
+    name: "Generic",
+    logo: MetaAILogo,
+    desc: "",
+  },
 } as const satisfies Record<string, ModelDefinition>;

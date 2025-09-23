@@ -5,7 +5,7 @@ import React from "react";
 import { useAsync } from "../hooks/useAsync";
 import fetchMetricsAction from "../../core/lib/actions/fetch-metrics.action";
 import Spinner from "./spinner";
-import { RightArrow } from "../assets/RightArrow";
+import { RightArrow } from "../assets/right-arrow";
 
 export default function MetricChartSection() {
   const [chartData, setChartData] = React.useState<TestMetricResult[]>([
