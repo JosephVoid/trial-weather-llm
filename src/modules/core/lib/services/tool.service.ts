@@ -13,7 +13,7 @@ export default async function executeTool(
       `http://api.weatherstack.com/current?access_key=${process.env.WEATHER_API_KEY}&query=${query}`
     );
     if (axiosResponse.statusText === "OK") {
-      return { response: JSON.stringify(axiosResponse.data), success: true };
+      return { response: JSON.stringify(axiosResponse.data) };
     } else {
       console.log("API RESP", axiosResponse.data);
       return null;

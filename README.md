@@ -38,10 +38,12 @@ Create an `.env.test` file with the same credentials if you want to run the test
 ```
 GEMINI_API_KEY=your_gemini_api_key
 WEATHER_API_KEY=your_weatherstack_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
 - `GEMINI_API_KEY`: Your API key for the Google Gemini API.
 - `WEATHER_API_KEY`: Your API key for the [Weatherstack API](https://weatherstack.com/).
+- `GROQ_API_KEY`: Your API key for the Groq API.
 
 ### Running the Development Server
 

@@ -9,13 +9,14 @@ import { useAsync } from "../hooks/useAsync";
 import fetchLLMsAction from "../../core/lib/actions/fetch-llms.actions";
 import { StateContext } from "../utils/state-provider";
 import chatAction from "../../core/lib/actions/chat.action";
+import { GeneralResponse } from "../../core/types";
 
 export default function ChatBox() {
   const [selectedLLM, setSelectedLLM] = React.useState<LLM>();
   const [metrics, setMetrics] = React.useState<{
     [key: string]: string | number;
   }>();
-
+  const [tool, setTool] = React.useState<GeneralResponse["tool"] | null>(null);
   const {
     conversations,
     saveMessage,
@@ -48,6 +49,7 @@ export default function ChatBox() {
         timestamp: new Date(),
       });
       setMetrics(response.metrics);
+      setTool(response.tool);
     }
   };
 
@@ -75,6 +77,7 @@ export default function ChatBox() {
         timestamp: new Date(),
       });
       setMetrics(response.metrics);
+      setTool(response.tool);
     }
   };
 
@@ -185,7 +188,11 @@ export default function ChatBox() {
       </div>
       <div className="w-1/4">
         {LLMs && (
-          <StatsBox stats={metrics ?? {}} llm={selectedLLM ?? LLMs[0]} />
+          <StatsBox
+            stats={metrics ?? {}}
+            llm={selectedLLM ?? LLMs[0]}
+            toolUsed={tool}
+          />
         )}
       </div>
     </div>

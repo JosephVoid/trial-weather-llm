@@ -1,17 +1,15 @@
 "use server";
 
-import { ModelName } from "../../types";
+import { GeneralResponse, ModelName } from "../../types";
 import { feedModel, requestModel } from "../services/model-request.service";
 import executeTool from "../services/tool.service";
+import { parseToolArguments } from "../utils/helpers";
 
 export default async function chatAction(
   query: string,
   model: ModelName,
   venderModelName?: string
-): Promise<{
-  response: string;
-  metrics: { [key: string]: string | number };
-} | null> {
+): Promise<GeneralResponse | null> {
   const modelResponse = await requestModel({ query, model, venderModelName });
   if (!modelResponse) return null;
 
@@ -46,7 +44,12 @@ export default async function chatAction(
     "Request Time": duration,
   };
 
-  if (responseToUser.success)
-    return { response: responseToUser.response, metrics };
+  const tool: GeneralResponse["tool"] = {
+    name: modelResponse.tool,
+    arg: JSON.stringify(parseToolArguments(modelResponse.arguments)),
+  };
+
+  if (responseToUser)
+    return { response: responseToUser.response, metrics, tool };
   else return null;
 }

@@ -19,7 +19,10 @@ export interface ModelResponse {
 
 export interface GeneralResponse {
   response: string;
-  success: boolean;
+  tool?: {
+    name: string;
+    arg: string;
+  };
   metrics?: { [key: string]: string | number };
 }
 
