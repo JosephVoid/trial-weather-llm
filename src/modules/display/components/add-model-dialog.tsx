@@ -1,5 +1,7 @@
 import React from "react";
 import { StateContext } from "../utils/state-provider";
+import Image from "next/image";
+import BotLogo from "@/src/modules/core/assets/bot-svgrepo-com.svg";
 
 export function AddModelDialog() {
   const { userLLMs, addLLM } = React.useContext(StateContext);
@@ -23,19 +25,23 @@ export function AddModelDialog() {
           Select a model to add from Groq
         </h3>
         {availableModels.map((model) => (
-          <p
+          <div
             className={`${
               userLLMs.includes(model)
                 ? `opacity-30`
                 : `hover:bg-gray-50 hover:font-bold cursor-pointer`
-            } p-2 `}
+            } py-2  flex gap-2`}
             key={model}
-            onClick={() =>
-              !userLLMs.includes(model) ? handleAddLLM(model) : null
-            }
           >
-            {model}
-          </p>
+            <Image src={BotLogo} width={30} height={50} alt="logo" />
+            <p
+              onClick={() =>
+                !userLLMs.includes(model) ? handleAddLLM(model) : null
+              }
+            >
+              {model}
+            </p>
+          </div>
         ))}
       </div>
       <form method="dialog" className="modal-backdrop">
