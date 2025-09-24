@@ -5,6 +5,8 @@ import {
   feedModel,
 } from "@/src/modules/core/lib/services/model-request.service";
 import executeTool from "@/src/modules/core/lib/services/tool.service";
+import { GeneralResponse } from "@/src/modules/core/types";
+import { parseToolArguments } from "@/src/modules/core/lib/utils/helpers";
 
 export async function POST(req: NextRequest) {
   const { query, model } = await req.json();
@@ -26,18 +28,44 @@ export async function POST(req: NextRequest) {
     return new Response("Tool execution failed", { status: 500 });
   }
 
+  const tool: GeneralResponse["tool"] = {
+    name: modelResponse.tool,
+    arg: JSON.stringify(parseToolArguments(modelResponse.arguments)),
+  };
+
   const stream = new ReadableStream({
     async start(controller) {
-      await feedGeminiStream(toolResponse.response, (chunk) => {
-        controller.enqueue(new TextEncoder().encode(chunk));
-      });
+      const encoder = new TextEncoder();
+
+      const finalResult = await feedGeminiStream(
+        toolResponse.response,
+        (chunk) => {
+          const payload = JSON.stringify({ type: "chunk", data: chunk }) + "\n";
+          controller.enqueue(encoder.encode(payload));
+        }
+      );
+
+      controller.enqueue(
+        encoder.encode(JSON.stringify({ type: "end" }) + "\n")
+      );
+
+      controller.enqueue(
+        encoder.encode(
+          JSON.stringify({ type: "metrics", data: finalResult?.metrics }) + "\n"
+        )
+      );
+
+      controller.enqueue(
+        encoder.encode(JSON.stringify({ type: "tool", data: tool }) + "\n")
+      );
+
       controller.close();
     },
   });
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Type": "application/x-ndjson; charset=utf-8",
       "Cache-Control": "no-cache",
       "Transfer-Encoding": "chunked",
     },

@@ -80,13 +80,17 @@ export async function feedGeminiStream(
     );
 
     let fullText = "";
+    let tokenCount = 0;
+    let firstChunkRequestTime = 0;
 
     for await (const chunk of result.stream) {
       const chunkText = chunk.text();
       if (chunkText) {
         fullText += chunkText;
         onChunk(chunkText);
+        if (tokenCount === 0) firstChunkRequestTime = Date.now() - startTime;
       }
+      tokenCount += chunk.usageMetadata?.totalTokenCount ?? 0;
     }
 
     recordHistory([{ role: "model", parts: [{ text: fullText }] }]);
@@ -94,7 +98,8 @@ export async function feedGeminiStream(
     return {
       response: fullText,
       metrics: {
-        "Request Time": Date.now() - startTime,
+        "Request Time": firstChunkRequestTime,
+        "Tokens Used": tokenCount,
       },
     };
   } catch (error) {

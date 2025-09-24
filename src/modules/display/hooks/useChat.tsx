@@ -93,24 +93,47 @@ export default function useChat() {
 
     const reader = res.body?.getReader();
     const decoder = new TextDecoder();
-
     if (!reader) return;
 
     let fullText = "";
+
     while (true) {
       const { done, value } = await reader.read();
-      const chunk = decoder.decode(value, { stream: true });
-      fullText += chunk;
-      saveMessageChunk(chunk, "streaming_gemini");
+      if (done) break;
 
-      if (done) {
-        finalizeStream({
-          llmId: "streaming_gemini",
-          role: "LLM",
-          timestamp: new Date(),
-          message: fullText,
-        });
-        break;
+      const chunk = decoder.decode(value, { stream: true });
+
+      // filter out empty strings
+      const lines = chunk.split("\n").filter(Boolean);
+
+      for (const line of lines) {
+        try {
+          const msg = JSON.parse(line);
+
+          if (msg.type === "chunk") {
+            fullText += msg.data;
+            saveMessageChunk(msg.data, "streaming_gemini");
+          }
+
+          if (msg.type === "end") {
+            finalizeStream({
+              llmId: "streaming_gemini",
+              role: "LLM",
+              timestamp: new Date(),
+              message: fullText,
+            });
+          }
+
+          if (msg.type === "metrics") {
+            setMetrics(msg.data);
+          }
+
+          if (msg.type === "tool") {
+            setTool(msg.data);
+          }
+        } catch (e) {
+          console.error("Failed to parse line:", line, e);
+        }
       }
     }
   };
