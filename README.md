@@ -21,11 +21,7 @@ A Next.js application that leverages the power of LLMs to provide real-time weat
     ```bash
     git clone https://github.com/JosephVoid/trial-weather-llm
     ```
-2.  Navigate to the project directory:
-    ```bash
-    cd trial-project
-    ```
-3.  Install the dependencies:
+2.  Install the dependencies:
     ```bash
     npm install
     ```
@@ -57,10 +53,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Project Structure
 
-The project is organized into the following modules:
+The project is organized into the following directories:
 
-- **`core`**: Contains the core business logic, including services for interacting with LLMs and external APIs.
-- **`display`**: Contains the UI components, pages, and hooks for the frontend.
+- **`src/modules/`**: Contains the source code, organized by feature modules.
+  - **`core/`**: Core application logic.
+    - **`lib/actions/`**: Server-side actions for interacting with models and APIs.
+    - **`lib/services/`**: Services for defining model interactions (Gemini, Groq) and handling API requests.
+    - **`lib/utils/`**: Utilities like test prompts, conversation history keeping and helper functions
+  - **`display/`**: UI-related components and logic.
+    - **`components/`**: React components for the user interface (e.g., `chat-box.tsx`, `llm-selection.tsx`).
+    - **`pages/landing.tsx`**: The main landing page component.
+    - **`hooks/`**: Custom React hooks
+- **`__tests__/`**: Contains Jest tests for the application.
+  - **`chat-flow.test.ts`**: Tests for the main chat flow.
 
 ## API Endpoints
 
