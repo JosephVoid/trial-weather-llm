@@ -88,7 +88,6 @@ export async function feedGroq(
 
     return {
       response: choice.message.content ?? "",
-      success: true,
       metrics: {
         "Tokens Used":
           response.usage?.total_tokens ??

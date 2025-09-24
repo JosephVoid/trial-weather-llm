@@ -16,7 +16,7 @@ export default async function fetchMetricsAction() {
 
     for (const prompt of prompts) {
       const result = await chatAction(prompt, modelName as ModelName);
-      if (result) {
+      if (result && result.metrics) {
         totalTokens += result.metrics["Tokens Used"] as number;
         totalLatency += result.metrics["Request Time"] as number;
       } else {

@@ -54,7 +54,6 @@ export async function feedGemini(
     recordHistory(result.response.candidates?.map((c) => c.content));
     return {
       response: result.response.text(),
-      success: true,
       metrics: {
         "Tokens Used": result.response.usageMetadata?.totalTokenCount ?? 0,
         "Request Time": Date.now() - startTime,
@@ -94,7 +93,6 @@ export async function feedGeminiStream(
 
     return {
       response: fullText,
-      success: true,
       metrics: {
         "Request Time": Date.now() - startTime,
       },
