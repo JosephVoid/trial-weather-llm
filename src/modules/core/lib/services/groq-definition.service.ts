@@ -81,6 +81,7 @@ export async function feedGroq(
           content: `Here is the response from the tool:\n${toolResponse}\nNow respond to the user. Remove any text formatting.`,
         },
       ],
+      include_reasoning: false,
     });
 
     const choice = response.choices[0];
